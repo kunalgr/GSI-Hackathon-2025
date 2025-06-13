@@ -1,0 +1,27 @@
+{
+  "pipeline_summary": {
+    "total_features_engineered": 100,
+    "features_selected": 79,
+    "models_trained": 10,
+    "best_model": "random_forest",
+    "best_roc_auc": 1.0,
+    "test_samples_predicted": 15577,
+    "high_prospectivity_areas": 3382,
+    "moderate_prospectivity_areas": 3096,
+    "low_prospectivity_areas": 9099
+  },
+  "key_findings": [
+    "The random_forest model achieved the best performance with ROC-AUC of 1.0000",
+    "Feature engineering created 29 new geological features",
+    "Ensemble methods generally outperformed individual models",
+    "3382 areas identified as high prospectivity targets",
+    "Alteration indices and element ratios were among the most important features"
+  ],
+  "recommendations": [
+    "Focus exploration efforts on areas with prospectivity scores >= 0.7",
+    "Validate model predictions with field geological mapping",
+    "Consider collecting additional geochemical samples in moderate prospectivity areas",
+    "Update models regularly with new exploration data",
+    "Use ensemble predictions for more robust prospectivity assessment"
+  ]
+}

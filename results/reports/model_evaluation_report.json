@@ -1,0 +1,444 @@
+{
+  "summary": {
+    "total_models": 10,
+    "individual_models": 5,
+    "ensemble_models": 5,
+    "best_model": "gradient_boosting",
+    "best_roc_auc": 1.0
+  },
+  "detailed_results": {
+    "logistic_regression": {
+      "type": "individual",
+      "metrics": {
+        "accuracy": 0.9523809523809523,
+        "precision": 1.0,
+        "recall": 0.9,
+        "f1_score": 0.9473684210526315,
+        "roc_auc": 0.9909090909090909,
+        "specificity": 1.0,
+        "sensitivity": 0.9,
+        "true_positives": 9.0,
+        "false_positives": 0.0,
+        "true_negatives": 11.0,
+        "false_negatives": 1.0
+      },
+      "confusion_matrix": {
+        "tn": 11,
+        "fp": 0,
+        "fn": 1,
+        "tp": 9
+      }
+    },
+    "random_forest": {
+      "type": "individual",
+      "metrics": {
+        "accuracy": 0.9047619047619048,
+        "precision": 1.0,
+        "recall": 0.8,
+        "f1_score": 0.8888888888888888,
+        "roc_auc": 0.9454545454545454,
+        "specificity": 1.0,
+        "sensitivity": 0.8,
+        "true_positives": 8.0,
+        "false_positives": 0.0,
+        "true_negatives": 11.0,
+        "false_negatives": 2.0
+      },
+      "confusion_matrix": {
+        "tn": 11,
+        "fp": 0,
+        "fn": 2,
+        "tp": 8
+      }
+    },
+    "extra_trees": {
+      "type": "individual",
+      "metrics": {
+        "accuracy": 0.8095238095238095,
+        "precision": 1.0,
+        "recall": 0.6,
+        "f1_score": 0.75,
+        "roc_auc": 0.9545454545454545,
+        "specificity": 1.0,
+        "sensitivity": 0.6,
+        "true_positives": 6.0,
+        "false_positives": 0.0,
+        "true_negatives": 11.0,
+        "false_negatives": 4.0
+      },
+      "confusion_matrix": {
+        "tn": 11,
+        "fp": 0,
+        "fn": 4,
+        "tp": 6
+      }
+    },
+    "gradient_boosting": {
+      "type": "individual",
+      "metrics": {
+        "accuracy": 0.9523809523809523,
+        "precision": 1.0,
+        "recall": 0.9,
+        "f1_score": 0.9473684210526315,
+        "roc_auc": 1.0,
+        "specificity": 1.0,
+        "sensitivity": 0.9,
+        "true_positives": 9.0,
+        "false_positives": 0.0,
+        "true_negatives": 11.0,
+        "false_negatives": 1.0
+      },
+      "confusion_matrix": {
+        "tn": 11,
+        "fp": 0,
+        "fn": 1,
+        "tp": 9
+      }
+    },
+    "xgboost": {
+      "type": "individual",
+      "metrics": {
+        "accuracy": 0.9523809523809523,
+        "precision": 1.0,
+        "recall": 0.9,
+        "f1_score": 0.9473684210526315,
+        "roc_auc": 0.9545454545454545,
+        "specificity": 1.0,
+        "sensitivity": 0.9,
+        "true_positives": 9.0,
+        "false_positives": 0.0,
+        "true_negatives": 11.0,
+        "false_negatives": 1.0
+      },
+      "confusion_matrix": {
+        "tn": 11,
+        "fp": 0,
+        "fn": 1,
+        "tp": 9
+      }
+    },
+    "voting_soft": {
+      "type": "ensemble",
+      "metrics": {
+        "accuracy": 0.9523809523809523,
+        "precision": 1.0,
+        "recall": 0.9,
+        "f1_score": 0.9473684210526315,
+        "roc_auc": 0.9545454545454545,
+        "specificity": 1.0,
+        "sensitivity": 0.9,
+        "true_positives": 9.0,
+        "false_positives": 0.0,
+        "true_negatives": 11.0,
+        "false_negatives": 1.0
+      },
+      "confusion_matrix": {
+        "tn": 11,
+        "fp": 0,
+        "fn": 1,
+        "tp": 9
+      }
+    },
+    "voting_hard": {
+      "type": "ensemble",
+      "metrics": {
+        "accuracy": 0.9523809523809523,
+        "precision": 1.0,
+        "recall": 0.9,
+        "f1_score": 0.9473684210526315,
+        "roc_auc": 0.95,
+        "specificity": 1.0,
+        "sensitivity": 0.9,
+        "true_positives": 9.0,
+        "false_positives": 0.0,
+        "true_negatives": 11.0,
+        "false_negatives": 1.0
+      },
+      "confusion_matrix": {
+        "tn": 11,
+        "fp": 0,
+        "fn": 1,
+        "tp": 9
+      }
+    },
+    "stacking": {
+      "type": "ensemble",
+      "metrics": {
+        "accuracy": 0.9523809523809523,
+        "precision": 1.0,
+        "recall": 0.9,
+        "f1_score": 0.9473684210526315,
+        "roc_auc": 0.9454545454545455,
+        "specificity": 1.0,
+        "sensitivity": 0.9,
+        "true_positives": 9.0,
+        "false_positives": 0.0,
+        "true_negatives": 11.0,
+        "false_negatives": 1.0
+      },
+      "confusion_matrix": {
+        "tn": 11,
+        "fp": 0,
+        "fn": 1,
+        "tp": 9
+      }
+    },
+    "weighted_average": {
+      "type": "ensemble",
+      "metrics": {
+        "accuracy": 0.9523809523809523,
+        "precision": 1.0,
+        "recall": 0.9,
+        "f1_score": 0.9473684210526315,
+        "roc_auc": 0.9545454545454545,
+        "specificity": 1.0,
+        "sensitivity": 0.9,
+        "true_positives": 9.0,
+        "false_positives": 0.0,
+        "true_negatives": 11.0,
+        "false_negatives": 1.0
+      },
+      "confusion_matrix": {
+        "tn": 11,
+        "fp": 0,
+        "fn": 1,
+        "tp": 9
+      }
+    },
+    "rank_average": {
+      "type": "ensemble",
+      "metrics": {
+        "accuracy": 0.9523809523809523,
+        "precision": 1.0,
+        "recall": 0.9,
+        "f1_score": 0.9473684210526315,
+        "roc_auc": 0.9818181818181817,
+        "specificity": 1.0,
+        "sensitivity": 0.9,
+        "true_positives": 9.0,
+        "false_positives": 0.0,
+        "true_negatives": 11.0,
+        "false_negatives": 1.0
+      },
+      "confusion_matrix": {
+        "tn": 11,
+        "fp": 0,
+        "fn": 1,
+        "tp": 9
+      }
+    }
+  },
+  "feature_importance": {
+    "random_forest": [
+      {
+        "feature": "fault_dist",
+        "importance": 0.16914446161950084,
+        "category": "structural"
+      },
+      {
+        "feature": "Ni_ppm",
+        "importance": 0.07157881188493509,
+        "category": "trace_elements"
+      },
+      {
+        "feature": "V_ppm",
+        "importance": 0.07039604027872864,
+        "category": "trace_elements"
+      },
+      {
+        "feature": "mafic_index",
+        "importance": 0.06394617912150483,
+        "category": "engineered"
+      },
+      {
+        "feature": "Fe2O3_%",
+        "importance": 0.04776281725141909,
+        "category": "geochemistry"
+      },
+      {
+        "feature": "Cu_ppm",
+        "importance": 0.046318098233717846,
+        "category": "trace_elements"
+      },
+      {
+        "feature": "Sr_ppm",
+        "importance": 0.0328054090384877,
+        "category": "trace_elements"
+      },
+      {
+        "feature": "Sc_ppm",
+        "importance": 0.0310689463465524,
+        "category": "trace_elements"
+      },
+      {
+        "feature": "MnO_%",
+        "importance": 0.029974351271269604,
+        "category": "geochemistry"
+      },
+      {
+        "feature": "ccpi_index",
+        "importance": 0.029584291919562838,
+        "category": "engineered"
+      },
+      {
+        "feature": "Zr_ppm",
+        "importance": 0.02809285674819331,
+        "category": "trace_elements"
+      },
+      {
+        "feature": "Co_ppm",
+        "importance": 0.024768476881980136,
+        "category": "trace_elements"
+      },
+      {
+        "feature": "alkalinity_ratio",
+        "importance": 0.024502530641668848,
+        "category": "engineered"
+      },
+      {
+        "feature": "spec_Thppm",
+        "importance": 0.020051431634156708,
+        "category": "geophysical"
+      },
+      {
+        "feature": "U_ppm",
+        "importance": 0.01760504566698082,
+        "category": "other"
+      },
+      {
+        "feature": "spec_Uppm",
+        "importance": 0.013932089289100356,
+        "category": "geophysical"
+      },
+      {
+        "feature": "Li_ppm",
+        "importance": 0.012358864731553839,
+        "category": "other"
+      },
+      {
+        "feature": "qtz_ast",
+        "importance": 0.011266664877129259,
+        "category": "other"
+      },
+      {
+        "feature": "spec_doser",
+        "importance": 0.010850526487453991,
+        "category": "geophysical"
+      },
+      {
+        "feature": "Cd_ppb",
+        "importance": 0.00977483948226214,
+        "category": "other"
+      }
+    ],
+    "xgboost": [
+      {
+        "feature": "fault_dist",
+        "importance": 0.14754995703697205,
+        "category": "structural"
+      },
+      {
+        "feature": "Fe2O3_%",
+        "importance": 0.11186390370130539,
+        "category": "geochemistry"
+      },
+      {
+        "feature": "V_ppm",
+        "importance": 0.08909113705158234,
+        "category": "trace_elements"
+      },
+      {
+        "feature": "mafic_index",
+        "importance": 0.07842539250850677,
+        "category": "engineered"
+      },
+      {
+        "feature": "Ni_ppm",
+        "importance": 0.06824464350938797,
+        "category": "trace_elements"
+      },
+      {
+        "feature": "Sc_ppm",
+        "importance": 0.04830198362469673,
+        "category": "trace_elements"
+      },
+      {
+        "feature": "Sr_ppm",
+        "importance": 0.03757938742637634,
+        "category": "trace_elements"
+      },
+      {
+        "feature": "Hf_ppm",
+        "importance": 0.03534678369760513,
+        "category": "other"
+      },
+      {
+        "feature": "Ag_ppb",
+        "importance": 0.032153431326150894,
+        "category": "other"
+      },
+      {
+        "feature": "Cu_ppm",
+        "importance": 0.029722517356276512,
+        "category": "trace_elements"
+      },
+      {
+        "feature": "Yb_ppm",
+        "importance": 0.026540467515587807,
+        "category": "rare_earth"
+      },
+      {
+        "feature": "Er_ppm",
+        "importance": 0.023800985887646675,
+        "category": "rare_earth"
+      },
+      {
+        "feature": "Co_ppm",
+        "importance": 0.021621834486722946,
+        "category": "trace_elements"
+      },
+      {
+        "feature": "Dy_ppm",
+        "importance": 0.02079184725880623,
+        "category": "rare_earth"
+      },
+      {
+        "feature": "mag_depth",
+        "importance": 0.02010764367878437,
+        "category": "geophysical"
+      },
+      {
+        "feature": "spec_Uppm",
+        "importance": 0.019353868439793587,
+        "category": "geophysical"
+      },
+      {
+        "feature": "mag_tail_t",
+        "importance": 0.018671778962016106,
+        "category": "geophysical"
+      },
+      {
+        "feature": "Zr_ppm",
+        "importance": 0.018513360992074013,
+        "category": "trace_elements"
+      },
+      {
+        "feature": "U_ppm",
+        "importance": 0.018420394510030746,
+        "category": "other"
+      },
+      {
+        "feature": "spec_Thppm",
+        "importance": 0.017861293628811836,
+        "category": "geophysical"
+      }
+    ]
+  },
+  "recommendations": [
+    "Best performing model: gradient_boosting with ROC-AUC of 1.0000",
+    "The model achieves 90.00% recall (sensitivity) for identifying prospective areas",
+    "Specificity of 100.00% helps minimize false positives",
+    "Consider using ensemble methods if individual model performance is not satisfactory",
+    "Regular model updates with new geological data are recommended"
+  ]
+}
