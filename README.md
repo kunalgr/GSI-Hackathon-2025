@@ -133,13 +133,6 @@ gold_prospectivity_mapping/
 
 ### Model Performance
 
-| Model | ROC-AUC | Precision | Recall | F1-Score |
-|-------|---------|-----------|--------|----------|
-| **Stacking Ensemble** | **0.945** | **0.89** | **0.87** | **0.88** |
-| XGBoost | 0.932 | 0.86 | 0.84 | 0.85 |
-| LightGBM | 0.928 | 0.85 | 0.83 | 0.84 |
-| Random Forest | 0.921 | 0.84 | 0.82 | 0.83 |
-| Soft Voting | 0.939 | 0.87 | 0.85 | 0.86 |
 
 ### Key Findings
 
