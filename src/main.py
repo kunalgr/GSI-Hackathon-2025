@@ -220,7 +220,7 @@ def main():
     minimum_score_value, maximum_score_value = score_range_bounds
 
     # Define a transformation function to scale values
-    rescale_function = lambda s: ((s - minimum_score_value) / (maximum_score_value - minimum_score_value)) * 0.45 + 0.5
+    rescale_function = lambda s: ((s - minimum_score_value) / (maximum_score_value - minimum_score_value)) * 0.25 + 0.7
     predictions_df['prospectivity_score'] = score_column.apply(rescale_function)
 
     # Generate binary classification using a threshold with lambda mapping
