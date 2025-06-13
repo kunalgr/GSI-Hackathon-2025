@@ -1,5 +1,5 @@
 # GSI-Hackathon-2025
-# Submitted by: SRK India
+### Submitted by: SRK India
 # 🏆 Gold Prospectivity Mapping
 
 [![Python](https://img.shields.io/badge/Python-3.8%2B-blue)](https://www.python.org/)
