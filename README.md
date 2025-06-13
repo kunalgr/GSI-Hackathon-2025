@@ -129,35 +129,6 @@ gold_prospectivity_mapping/
     └── Prospectivity maps
 ```
 
-## 📈 Results
-
-### Model Performance
-
-
-### Key Findings
-
-1. **Most Important Features**:
-   - Gold pathfinder anomaly scores
-   - Alteration indices (especially CCPI)
-   - Fault proximity
-   - Au/As and Au/Sb ratios
-   - LREE/HREE patterns
-
-2. **Geological Insights**:
-   - Areas within 500m of faults show 3x higher prospectivity
-   - Strong Au-As-Sb association indicates epithermal mineralization
-   - Sericite alteration index > 70 correlates with gold occurrence
-
-## 🖼️ Visualizations
-
-### ROC Curves
-![ROC Curves](results/figures/roc_curves_all_models.png)
-
-### Feature Importance
-![Feature Importance](results/figures/feature_importance_grouped_xgboost.png)
-
-### Prospectivity Map
-![Prospectivity Map](results/figures/prospectivity_map_preview.png)
 
 ## 📁 Project Structure
 
@@ -222,44 +193,6 @@ df_enhanced = engineer.engineer_features(df)
 df_enhanced['custom_index'] = (df['Au_ppb'] * df['As_ppm']) / df['Cu_ppm']
 ```
 
-### Model Tuning
-
-```python
-from src.config import HYPERPARAMETERS
-
-# Modify hyperparameter grids
-HYPERPARAMETERS['xgboost'] = {
-    'n_estimators': [200, 400, 600],
-    'max_depth': [5, 7, 9],
-    'learning_rate': [0.01, 0.05, 0.1],
-    'subsample': [0.8, 0.9],
-    'colsample_bytree': [0.8, 0.9]
-}
-```
-
-### Prediction on New Data
-
-```python
-from src.data_preprocessing import DataPreprocessor
-import joblib
-
-# Load saved model
-model = joblib.load('models/saved_models/ensemble_stacking_model.pkl')
-
-# Preprocess new data
-preprocessor = DataPreprocessor()
-new_data = preprocessor.process_test_data('new_data.csv')
-
-# Make predictions
-predictions = model.predict_proba(new_data)[:, 1]
-```
-
-## 📊 Performance Optimization
-
-- **Memory Management**: Features are processed in chunks for large datasets
-- **Parallel Processing**: All models use n_jobs=-1 for parallel computation
-- **GPU Support**: XGBoost and LightGBM can utilize GPU when available
-- **Feature Selection**: Reduces dimensionality from 100+ to ~30-40 features
 
 ## 🤝 Contributing
 
@@ -277,11 +210,12 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 👥 Authors
 
-- **Your Name** - *Initial work* - [YourGitHub](https://github.com/yourusername)
+- **Kunal Ghosh Roy** - *Data Science Expert: Independent Consultant* - [https://github.com/kunalgr/](https://github.com/kunalgr/)
+- **Atree Bandyopadhyay** - *Subject Matter Expert: SRK India*
 
 ## 🙏 Acknowledgments
 
-- Geological Survey for providing domain expertise
+- SRK India for providing domain expertise
 - Open-source ML community for amazing tools
 - Research papers on mineral prospectivity mapping
 
@@ -293,7 +227,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📧 Contact
 
-Project Link: [https://github.com/yourusername/gold-prospectivity-mapping](https://github.com/yourusername/gold-prospectivity-mapping)
+Project Link: [https://github.com/kunalgr/GSI-Hackathon-2025](https://github.com/kunalgr/GSI-Hackathon-2025)
 
 ---
 
