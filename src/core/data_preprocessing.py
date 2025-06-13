@@ -41,7 +41,7 @@ class DataPreprocessor:
         if filepath.endswith('.csv'):
             return pd.read_csv(filepath)
         else:
-            # For DBF or other formats, use geopandas
+            # For DBF or other formats, try geopandas
             try:
                 gdf = gpd.read_file(filepath)
                 return pd.DataFrame(gdf.drop(columns='geometry', errors='ignore'))
@@ -83,10 +83,9 @@ class DataPreprocessor:
             if col not in EXCLUDE_COLUMNS + [TARGET_COLUMN]:
                 # For geological categories like lithology, formation
                 df_clean[col].fillna('Unknown', inplace=True)
-        
+
         if TARGET_COLUMN in df_clean.columns:
             df_clean[TARGET_COLUMN] = df_clean[TARGET_COLUMN].astype(int)
-
         
         return df_clean
     
@@ -147,14 +146,16 @@ class DataPreprocessor:
         
         return pd.DataFrame(scaled_features, columns=features.columns, index=features.index)
     
-    def encode_categorical_features(self, df: pd.DataFrame) -> pd.DataFrame:
+    def encode_categorical_features(self, df: pd.DataFrame, fit: bool = True) -> pd.DataFrame:
         """
-        Encode categorical geological features.
+        Encode categorical geological features with special handling for lithology.
         
         Parameters:
         -----------
         df : pd.DataFrame
             Dataframe with categorical features
+        fit : bool
+            Whether to fit the encoder (True for training data)
             
         Returns:
         --------
@@ -163,12 +164,47 @@ class DataPreprocessor:
         """
         df_encoded = df.copy()
         
-        # One-hot encode geological categorical features
-        categorical_cols = ['age', 'lithology', 'formation'] if 'age' in df.columns else []
+        # Handle lithology encoding with gold prospectivity weighting
+        if 'lithology' in df.columns:
+            print("\n[LITHOLOGY ENCODING]")
+            print(f"Unique lithologies in data: {df['lithology'].nunique()}")
+            print(f"Lithology distribution:")
+            print(df['lithology'].value_counts())
+            
+            # Create lithology prospectivity score based on known gold occurrences
+            from utils.config import LITHOLOGY_GOLD_COUNTS
+            max_count = max(LITHOLOGY_GOLD_COUNTS.values())
+            
+            # Calculate normalized prospectivity score for each lithology
+            df_encoded['lithology_prospectivity'] = df['lithology'].map(
+                lambda x: LITHOLOGY_GOLD_COUNTS.get(x, 0.5) / max_count
+            )
+            print(f"\nLithology prospectivity scores:")
+            print(df_encoded.groupby('lithology')['lithology_prospectivity'].first().sort_values(ascending=False))
+            
+            # Also create one-hot encoding for lithology
+            if fit:
+                # Store unique lithologies for consistent encoding
+                self.lithology_categories = sorted(df['lithology'].unique())
+                print(f"\nStored {len(self.lithology_categories)} lithology categories for encoding")
+            
+            # Create dummies using stored categories
+            if hasattr(self, 'lithology_categories'):
+                for lith in self.lithology_categories:
+                    df_encoded[f'lithology_{lith}'] = (df['lithology'] == lith).astype(int)
+            else:
+                # Fallback to regular dummies if categories not stored
+                dummies = pd.get_dummies(df['lithology'], prefix='lithology')
+                df_encoded = pd.concat([df_encoded, dummies], axis=1)
+            
+            # Drop original lithology column
+            df_encoded.drop('lithology', axis=1, inplace=True)
         
-        for col in categorical_cols:
+        # Handle other categorical features
+        other_categorical = ['age', 'formation']
+        for col in other_categorical:
             if col in df.columns:
-                # Create dummy variables
+                print(f"\nEncoding {col}: {df[col].nunique()} unique values")
                 dummies = pd.get_dummies(df[col], prefix=col, drop_first=True)
                 df_encoded = pd.concat([df_encoded, dummies], axis=1)
                 df_encoded.drop(col, axis=1, inplace=True)
@@ -213,27 +249,49 @@ class DataPreprocessor:
         Tuple
             X_train, X_val, y_train, y_val, feature_names
         """
+        print("\n[DATA PREPROCESSING PIPELINE]")
+        print("="*60)
+        
         # Load data
+        print("\n1. Loading data...")
         df = self.load_data(filepath)
+        print(f"   Data shape: {df.shape}")
         
         # Clean data
+        print("\n2. Cleaning data...")
         df = self.clean_data(df)
+        print(f"   Data shape after cleaning: {df.shape}")
         
         # Encode categorical features
-        df = self.encode_categorical_features(df)
+        print("\n3. Encoding categorical features...")
+        df = self.encode_categorical_features(df, fit=True)
+        print(f"   Data shape after encoding: {df.shape}")
         
         # Prepare features
+        print("\n4. Preparing features...")
         features = self.prepare_features(df, is_training=True)
+        print(f"   Feature matrix shape: {features.shape}")
+        print(f"   Number of features: {len(self.feature_columns)}")
         
         # Get target
         target = df[TARGET_COLUMN]
+        print(f"\n5. Target distribution:")
+        print(f"   Class 0 (non-prospective): {(target == 0).sum()} ({(target == 0).mean():.1%})")
+        print(f"   Class 1 (prospective): {(target == 1).sum()} ({(target == 1).mean():.1%})")
         
         # Split data
+        print("\n6. Splitting data...")
         X_train, X_val, y_train, y_val = self.split_data(features, target)
+        print(f"   Training set: {X_train.shape}")
+        print(f"   Validation set: {X_val.shape}")
         
         # Scale features
+        print("\n7. Scaling features...")
         X_train_scaled = self.scale_features(X_train, fit=True)
         X_val_scaled = self.scale_features(X_val, fit=False)
+        print(f"   Scaling complete using RobustScaler")
+        
+        print("\n[DATA PREPROCESSING COMPLETE]")
         
         return X_train_scaled, X_val_scaled, y_train, y_val, list(features.columns)
     

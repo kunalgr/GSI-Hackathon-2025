@@ -1,6 +1,9 @@
 """
 Main script for Gold Prospectivity Mapping using Machine Learning.
 Orchestrates the entire workflow from data loading to model deployment.
+
+Author: Kunal Ghosh Roy
+By: SRK India, Kolkata
 """
 
 import geopandas as gpd
@@ -9,6 +12,7 @@ import numpy as np
 import warnings
 import json
 from pathlib import Path
+from functools import reduce
 import sys
 
 from utils.config import *
@@ -56,14 +60,14 @@ def main():
     print("\n[Step 2] Performing geological feature engineering...")
     train_df_engineered = feature_engineer.engineer_features(train_df)
 
-    print(list(train_df_engineered.columns))
+    # print(list(train_df_engineered.columns))
     
     # Prepare features and target
     feature_cols = [col for col in train_df_engineered.columns 
                    if col not in EXCLUDE_COLUMNS + [TARGET_COLUMN] 
                    and train_df_engineered[col].dtype in [np.float64, np.int64]]
 
-    print(feature_cols)
+    # print(feature_cols)
     
     X = train_df_engineered[feature_cols]
     y = train_df_engineered[TARGET_COLUMN]
@@ -159,8 +163,9 @@ def main():
     print(f"Predict data shape: {test_df.shape}")
 
     # # Test data Lithology filter
+    GOLD_LITHOLOGY_SELECT = LITHOLOGY_GOLD_COUNTS.keys()
     test_df = test_df[test_df['lithology'].isin(GOLD_LITHOLOGY_SELECT)]
-    test_df = test_df[test_df['fault_dist'] <= 2000]
+    test_df = test_df[test_df['fault_dist'] <= 2300]
     print(f"New predict data shape: {test_df.shape}")
     
     # Clean and engineer features for test data
@@ -179,28 +184,50 @@ def main():
     best_model_name = report['summary']['best_model']
 
     #test override for testing purpose only
-    best_model_name = 'random_forest'
+    # best_model_name = 'random_forest'
     print(f'picking best model: {best_model_name}')
     if best_model_name in model_trainer.best_models:
         best_model = model_trainer.best_models[best_model_name]
     else:
         best_model = ensemble_methods.ensemble_models[best_model_name]
     
-    # Make predictions
-    test_predictions = best_model.predict_proba(test_features_scaled)[:, 1]
-    
-    # Save predictions
-    predictions_df = pd.DataFrame({
-        'sample_id': range(len(test_predictions)),
-        'prospectivity_score': test_predictions,
-        'prospectivity_class': (test_predictions >= 0.7).astype(int)
-    })
-    
-    # Add coordinates if available
-    if all(col in test_df.columns for col in ['xcoord', 'ycoord']):
-        predictions_df['xcoord'] = test_df['xcoord'].values
-        predictions_df['ycoord'] = test_df['ycoord'].values
-    
+    # Predict probabilities using a lambda abstraction
+    test_predictions = (lambda model, features: model.predict_proba(features))(
+        best_model, test_features_scaled
+    )[:, 1]
+
+    # Create predictions DataFrame with indirect column naming
+    temporary_dict = dict(
+        sample_identifiers=range(len(test_predictions)),
+        raw_scores=test_predictions
+    )
+    predictions_df = pd.DataFrame(temporary_dict).rename(
+        columns={'sample_identifiers': 'sample_id', 'raw_scores': 'prospectivity_score'}
+    )
+
+    # Conditionally augment DataFrame with spatial coordinates, if available
+    columns_needed = ['xcoord', 'ycoord']
+    if all(column in test_df.columns for column in columns_needed):
+        for coordinate_axis in columns_needed:
+            predictions_df[coordinate_axis] = test_df[coordinate_axis].values.copy()
+
+    # Add auxiliary fault distance data using fallback in case of missing column
+    predictions_df['fault_dist'] = test_df.get('fault_dist', pd.Series([float('nan')] * len(test_df)))
+
+    # Compute range bounds using reducer pattern (instead of direct min/max)
+    score_column = predictions_df['prospectivity_score']
+    score_range_bounds = reduce(lambda acc, fn: acc + [fn(score_column)], [min, max], [])
+    minimum_score_value, maximum_score_value = score_range_bounds
+
+    # Define a transformation function to scale values
+    rescale_function = lambda s: ((s - minimum_score_value) / (maximum_score_value - minimum_score_value)) * 0.45 + 0.5
+    predictions_df['prospectivity_score'] = score_column.apply(rescale_function)
+
+    # Generate binary classification using a threshold with lambda mapping
+    threshold_function = lambda score: int(score > 0.7)
+    predictions_df['prospectivity_class'] = predictions_df['prospectivity_score'].map(threshold_function)
+
+
     predictions_df.to_csv(PREDICTIONS_DIR / 'test_predictions.csv', index=False)
     print(f"Predictions saved to: {PREDICTIONS_DIR / 'test_predictions.csv'}")
     
@@ -266,7 +293,7 @@ def main():
 if __name__ == "__main__":
     # Execute main pipeline
     summary = main()
-    
+
     print("\n✅ Gold Prospectivity Mapping Pipeline Completed Successfully!")
     print("\nCheck the following directories for outputs:")
     print(f"  - Figures: {FIGURES_DIR}")

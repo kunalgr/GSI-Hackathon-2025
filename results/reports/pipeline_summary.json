@@ -3,18 +3,18 @@
     "total_features_engineered": 100,
     "features_selected": 79,
     "models_trained": 10,
-    "best_model": "random_forest",
+    "best_model": "gradient_boosting",
     "best_roc_auc": 1.0,
-    "test_samples_predicted": 15577,
-    "high_prospectivity_areas": 3382,
-    "moderate_prospectivity_areas": 3096,
-    "low_prospectivity_areas": 9099
+    "test_samples_predicted": 17976,
+    "high_prospectivity_areas": 17976,
+    "moderate_prospectivity_areas": 0,
+    "low_prospectivity_areas": 0
   },
   "key_findings": [
-    "The random_forest model achieved the best performance with ROC-AUC of 1.0000",
+    "The gradient_boosting model achieved the best performance with ROC-AUC of 1.0000",
     "Feature engineering created 29 new geological features",
     "Ensemble methods generally outperformed individual models",
-    "3382 areas identified as high prospectivity targets",
+    "17976 areas identified as high prospectivity targets",
     "Alteration indices and element ratios were among the most important features"
   ],
   "recommendations": [

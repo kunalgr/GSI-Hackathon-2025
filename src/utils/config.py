@@ -14,6 +14,10 @@ DATA_DIR = PROJECT_ROOT / "data"
 RAW_DATA_DIR = DATA_DIR / "input"
 PROCESSED_DATA_DIR = DATA_DIR / "processed"
 
+# Data file names
+TRAIN_FILE = "train_gold.dbf"
+PREDICT_FILE = "all_points.dbf"
+
 # Model paths
 MODEL_DIR = PROJECT_ROOT / "models"
 SAVED_MODELS_DIR = MODEL_DIR / "saved_models"
@@ -39,35 +43,48 @@ CV_FOLDS = 5
 CORRELATION_THRESHOLD = 0.95
 VARIANCE_THRESHOLD = 0.01
 
-# Model hyperparameters for grid search
+
+# Model hyperparameters for grid search - optimized for small dataset (prevent overfitting)
 HYPERPARAMETERS = {
     'random_forest': {
-        'n_estimators': [100, 200, 300],
-        'max_depth': [10, 20, None],
-        'min_samples_split': [2, 5, 10],
-        'min_samples_leaf': [1, 2, 4],
+        'n_estimators': [50, 100, 150],
+        'max_depth': [3, 5, 7, None],
+        'min_samples_split': [5, 10, 15],
+        'min_samples_leaf': [3, 5, 7],
         'max_features': ['sqrt', 'log2']
     },
-    'xgboost': {
-        'n_estimators': [100, 200, 300],
-        'max_depth': [3, 5, 7],
-        'learning_rate': [0.01, 0.1, 0.3],
-        'subsample': [0.7, 0.8, 0.9],
-        'colsample_bytree': [0.7, 0.8, 0.9]
+    'extra_trees': {
+        'n_estimators': [50, 100, 150],
+        'max_depth': [3, 5, 7, None],
+        'min_samples_split': [5, 10, 15],
+        'min_samples_leaf': [3, 5, 7],
+        'max_features': ['sqrt', 'log2']
     },
-    'lightgbm': {
-        'n_estimators': [100, 200, 300],
-        'num_leaves': [31, 50, 100],
-        'learning_rate': [0.01, 0.1, 0.3],
-        'feature_fraction': [0.7, 0.8, 0.9],
-        'bagging_fraction': [0.7, 0.8, 0.9]
+    'gradient_boosting': {
+        'n_estimators': [50, 100],
+        'learning_rate': [0.01, 0.05, 0.1],
+        'max_depth': [2, 3, 4],
+        'subsample': [0.6, 0.7, 0.8],
+        'min_samples_split': [5, 10],
+        'min_samples_leaf': [3, 5]
+    },
+    'xgboost': {
+        'n_estimators': [50, 100, 150],
+        'max_depth': [2, 3, 4],
+        'learning_rate': [0.01, 0.05, 0.1],
+        'subsample': [0.6, 0.7, 0.8],
+        'colsample_bytree': [0.6, 0.7, 0.8],
+        'reg_alpha': [0, 0.1, 1],  # L1 regularization
+        'reg_lambda': [1, 2, 5]    # L2 regularization
     },
     'logistic_regression': {
-        'C': [0.001, 0.01, 0.1, 1, 10, 100],
-        'penalty': ['l1', 'l2'],
-        'solver': ['liblinear', 'saga']
+        'C': [0.001, 0.01, 0.1, 1, 10],
+        'penalty': ['l2'],  # L2 regularization
+        'solver': ['liblinear', 'lbfgs'],
+        'max_iter': [1000]
     }
 }
+
 
 # Geological feature groups
 GEOLOGICAL_FEATURES = {
@@ -90,4 +107,19 @@ TARGET_COLUMN = 'likely'
 # Columns to exclude from features
 EXCLUDE_COLUMNS = ['geometry', 'xcoord', 'ycoord']
 
-GOLD_LITHOLOGY_SELECT = ['META-BASALT', 'ARGILLITE', 'PILLOWED METABASALT', 'PINK GRANITE', 'BANDED IRON FORMATION', 'QUARTZ VEIN/REEF', 'GREY HORNBLENDE BIOTITE GNEISS', 'CHLORITE SERICITE SCHIST', 'CARBONACEOUS PHYLLITE', 'CONGLOMERATE', 'GREY GRANITE']
+# Lithology gold prospectivity based on known occurrences
+LITHOLOGY_GOLD_COUNTS = {
+    'META-BASALT': 16,
+    'ARGILLITE': 15,
+    'PILLOWED METABASALT': 9,
+    'PINK GRANITE': 3,
+    'BANDED IRON FORMATION': 2,
+    'QUARTZ VEIN/REEF': 1,
+    'GREY HORNBLENDE BIOTITE GNEISS': 1,
+    'CHLORITE SERICITE SCHIST': 1,
+    'CARBONACEOUS PHYLLITE': 1,
+    'CONGLOMERATE': 1,
+    'GREY GRANITE': 1
+}
+
+# GOLD_LITHOLOGY_SELECT = ['META-BASALT', 'ARGILLITE', 'PILLOWED METABASALT', 'PINK GRANITE', 'BANDED IRON FORMATION', 'QUARTZ VEIN/REEF', 'GREY HORNBLENDE BIOTITE GNEISS', 'CHLORITE SERICITE SCHIST', 'CARBONACEOUS PHYLLITE', 'CONGLOMERATE', 'GREY GRANITE']

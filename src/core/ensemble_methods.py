@@ -40,9 +40,8 @@ class EnsembleMethods:
         VotingClassifier
             Voting ensemble model
         """
-        # Select best performing models for ensemble
-        estimators = [(name, model) for name, model in models.items() 
-                     if name not in ['naive_bayes']]  # Exclude models that might not work well in ensemble
+        # Use all available models for ensemble
+        estimators = [(name, model) for name, model in models.items()]
         
         voting_clf = VotingClassifier(
             estimators=estimators,
@@ -72,11 +71,8 @@ class EnsembleMethods:
         if meta_learner is None:
             meta_learner = LogisticRegression(random_state=RANDOM_STATE, max_iter=1000)
         
-        # Select diverse models for stacking
-        base_estimators = [
-            (name, model) for name, model in models.items()
-            if name in ['random_forest', 'xgboost', 'lightgbm', 'svm', 'logistic_regression']
-        ]
+        # Use all available models for stacking
+        base_estimators = [(name, model) for name, model in models.items()]
         
         stacking_clf = StackingClassifier(
             estimators=base_estimators,
@@ -206,10 +202,15 @@ class EnsembleMethods:
         Dict[str, Any]
             Ensemble results
         """
+        print("\n" + "="*60)
+        print("ENSEMBLE MODEL TRAINING")
+        print("="*60)
+        
         results = {}
         
         # 1. Voting Ensemble (Soft)
-        print("\nTraining Soft Voting Ensemble...")
+        print("\n1. Training Soft Voting Ensemble...")
+        print("   Combining predictions using probability averaging")
         voting_soft = self.create_voting_ensemble(models, voting='soft')
         voting_soft.fit(X_train, y_train)
         voting_soft_pred = voting_soft.predict_proba(X_val)[:, 1]
@@ -218,9 +219,11 @@ class EnsembleMethods:
             'predictions': voting_soft_pred,
             'score': self._evaluate_predictions(y_val, voting_soft_pred)
         }
+        print(f"   ROC-AUC: {results['voting_soft']['score']['roc_auc']:.4f}")
         
         # 2. Voting Ensemble (Hard)
-        print("Training Hard Voting Ensemble...")
+        print("\n2. Training Hard Voting Ensemble...")
+        print("   Combining predictions using majority voting")
         voting_hard = self.create_voting_ensemble(models, voting='hard')
         voting_hard.fit(X_train, y_train)
         voting_hard_pred = voting_hard.predict(X_val)
@@ -229,9 +232,12 @@ class EnsembleMethods:
             'predictions': voting_hard_pred,
             'score': self._evaluate_predictions(y_val, voting_hard_pred, is_proba=False)
         }
+        print(f"   Accuracy: {results['voting_hard']['score']['accuracy']:.4f}")
         
         # 3. Stacking Ensemble
-        print("Training Stacking Ensemble...")
+        print("\n3. Training Stacking Ensemble...")
+        print("   Base models: " + ", ".join(models.keys()))
+        print("   Meta-learner: Logistic Regression")
         stacking = self.create_stacking_ensemble(models)
         stacking.fit(X_train, y_train)
         stacking_pred = stacking.predict_proba(X_val)[:, 1]
@@ -240,35 +246,55 @@ class EnsembleMethods:
             'predictions': stacking_pred,
             'score': self._evaluate_predictions(y_val, stacking_pred)
         }
+        print(f"   ROC-AUC: {results['stacking']['score']['roc_auc']:.4f}")
         
         # 4. Weighted Average Ensemble
-        print("Creating Weighted Average Ensemble...")
+        print("\n4. Creating Weighted Average Ensemble...")
         # Get predictions from all models
         model_predictions = {}
+        print("   Getting predictions from individual models...")
         for name, model in models.items():
             if hasattr(model, 'predict_proba'):
                 model_predictions[name] = model.predict_proba(X_val)[:, 1]
+                print(f"     {name}: predictions obtained")
         
         # Calculate weights based on individual model performance
+        print("   Calculating optimal weights based on performance...")
         weights = self._calculate_optimal_weights(model_predictions, y_val)
+        
+        print("   Model weights:")
+        for model, weight in weights.items():
+            print(f"     {model}: {weight:.3f}")
+        
         weighted_pred = self.weighted_average_ensemble(model_predictions, weights)
         results['weighted_average'] = {
             'predictions': weighted_pred,
             'score': self._evaluate_predictions(y_val, weighted_pred),
             'weights': weights
         }
+        print(f"   ROC-AUC: {results['weighted_average']['score']['roc_auc']:.4f}")
         
         # 5. Rank Average Ensemble
-        print("Creating Rank Average Ensemble...")
+        print("\n5. Creating Rank Average Ensemble...")
+        print("   Converting predictions to ranks and averaging")
         rank_pred = self.rank_average_ensemble(model_predictions)
         results['rank_average'] = {
             'predictions': rank_pred,
             'score': self._evaluate_predictions(y_val, rank_pred)
         }
+        print(f"   ROC-AUC: {results['rank_average']['score']['roc_auc']:.4f}")
         
         # Save ensemble models
+        print("\n[SAVING ENSEMBLE MODELS]")
         for name, model in self.ensemble_models.items():
             self.save_ensemble_model(model, name)
+            print(f"   Saved: ensemble_{name}_model.pkl")
+        
+        # Summary
+        print("\n[ENSEMBLE TRAINING COMPLETE]")
+        print(f"Total ensemble models trained: {len(results)}")
+        best_ensemble = max(results.items(), key=lambda x: x[1]['score'].get('roc_auc', 0))
+        print(f"Best ensemble model: {best_ensemble[0]} (ROC-AUC: {best_ensemble[1]['score']['roc_auc']:.4f})")
         
         return results
     

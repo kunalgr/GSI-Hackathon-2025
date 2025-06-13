@@ -10,23 +10,23 @@
     "logistic_regression": {
       "type": "individual",
       "metrics": {
-        "accuracy": 0.9523809523809523,
-        "precision": 1.0,
-        "recall": 0.9,
-        "f1_score": 0.9473684210526315,
-        "roc_auc": 0.9909090909090909,
-        "specificity": 1.0,
-        "sensitivity": 0.9,
-        "true_positives": 9.0,
-        "false_positives": 0.0,
-        "true_negatives": 11.0,
-        "false_negatives": 1.0
+        "accuracy": 0.8095238095238095,
+        "precision": 0.8,
+        "recall": 0.8,
+        "f1_score": 0.8,
+        "roc_auc": 0.8727272727272727,
+        "specificity": 0.8181818181818182,
+        "sensitivity": 0.8,
+        "true_positives": 8.0,
+        "false_positives": 2.0,
+        "true_negatives": 9.0,
+        "false_negatives": 2.0
       },
       "confusion_matrix": {
-        "tn": 11,
-        "fp": 0,
-        "fn": 1,
-        "tp": 9
+        "tn": 9,
+        "fp": 2,
+        "fn": 2,
+        "tp": 8
       }
     },
     "random_forest": {
@@ -36,7 +36,7 @@
         "precision": 1.0,
         "recall": 0.8,
         "f1_score": 0.8888888888888888,
-        "roc_auc": 0.9454545454545454,
+        "roc_auc": 0.9545454545454545,
         "specificity": 1.0,
         "sensitivity": 0.8,
         "true_positives": 8.0,
@@ -102,7 +102,7 @@
         "precision": 1.0,
         "recall": 0.9,
         "f1_score": 0.9473684210526315,
-        "roc_auc": 0.9545454545454545,
+        "roc_auc": 0.9909090909090909,
         "specificity": 1.0,
         "sensitivity": 0.9,
         "true_positives": 9.0,
@@ -142,23 +142,23 @@
     "voting_hard": {
       "type": "ensemble",
       "metrics": {
-        "accuracy": 0.9523809523809523,
+        "accuracy": 0.9047619047619048,
         "precision": 1.0,
-        "recall": 0.9,
-        "f1_score": 0.9473684210526315,
-        "roc_auc": 0.95,
+        "recall": 0.8,
+        "f1_score": 0.8888888888888888,
+        "roc_auc": 0.9,
         "specificity": 1.0,
-        "sensitivity": 0.9,
-        "true_positives": 9.0,
+        "sensitivity": 0.8,
+        "true_positives": 8.0,
         "false_positives": 0.0,
         "true_negatives": 11.0,
-        "false_negatives": 1.0
+        "false_negatives": 2.0
       },
       "confusion_matrix": {
         "tn": 11,
         "fp": 0,
-        "fn": 1,
-        "tp": 9
+        "fn": 2,
+        "tp": 8
       }
     },
     "stacking": {
@@ -168,7 +168,7 @@
         "precision": 1.0,
         "recall": 0.9,
         "f1_score": 0.9473684210526315,
-        "roc_auc": 0.9454545454545455,
+        "roc_auc": 0.9545454545454545,
         "specificity": 1.0,
         "sensitivity": 0.9,
         "true_positives": 9.0,
@@ -208,21 +208,21 @@
     "rank_average": {
       "type": "ensemble",
       "metrics": {
-        "accuracy": 0.9523809523809523,
-        "precision": 1.0,
+        "accuracy": 0.9047619047619048,
+        "precision": 0.9,
         "recall": 0.9,
-        "f1_score": 0.9473684210526315,
-        "roc_auc": 0.9818181818181817,
-        "specificity": 1.0,
+        "f1_score": 0.9,
+        "roc_auc": 0.9909090909090909,
+        "specificity": 0.9090909090909091,
         "sensitivity": 0.9,
         "true_positives": 9.0,
-        "false_positives": 0.0,
-        "true_negatives": 11.0,
+        "false_positives": 1.0,
+        "true_negatives": 10.0,
         "false_negatives": 1.0
       },
       "confusion_matrix": {
-        "tn": 11,
-        "fp": 0,
+        "tn": 10,
+        "fp": 1,
         "fn": 1,
         "tp": 9
       }
@@ -232,205 +232,205 @@
     "random_forest": [
       {
         "feature": "fault_dist",
-        "importance": 0.16914446161950084,
+        "importance": 0.15796405104805122,
         "category": "structural"
       },
       {
         "feature": "Ni_ppm",
-        "importance": 0.07157881188493509,
+        "importance": 0.08765383927031631,
         "category": "trace_elements"
       },
       {
         "feature": "V_ppm",
-        "importance": 0.07039604027872864,
+        "importance": 0.0815752667289414,
         "category": "trace_elements"
       },
       {
         "feature": "mafic_index",
-        "importance": 0.06394617912150483,
-        "category": "engineered"
-      },
-      {
-        "feature": "Fe2O3_%",
-        "importance": 0.04776281725141909,
-        "category": "geochemistry"
-      },
-      {
-        "feature": "Cu_ppm",
-        "importance": 0.046318098233717846,
-        "category": "trace_elements"
-      },
-      {
-        "feature": "Sr_ppm",
-        "importance": 0.0328054090384877,
-        "category": "trace_elements"
-      },
-      {
-        "feature": "Sc_ppm",
-        "importance": 0.0310689463465524,
-        "category": "trace_elements"
-      },
-      {
-        "feature": "MnO_%",
-        "importance": 0.029974351271269604,
-        "category": "geochemistry"
-      },
-      {
-        "feature": "ccpi_index",
-        "importance": 0.029584291919562838,
+        "importance": 0.0812408972049925,
         "category": "engineered"
       },
       {
         "feature": "Zr_ppm",
-        "importance": 0.02809285674819331,
-        "category": "trace_elements"
-      },
-      {
-        "feature": "Co_ppm",
-        "importance": 0.024768476881980136,
+        "importance": 0.0602902119791379,
         "category": "trace_elements"
       },
       {
         "feature": "alkalinity_ratio",
-        "importance": 0.024502530641668848,
+        "importance": 0.04959009651765016,
         "category": "engineered"
       },
       {
+        "feature": "Fe2O3_%",
+        "importance": 0.0492019651197131,
+        "category": "geochemistry"
+      },
+      {
+        "feature": "Sc_ppm",
+        "importance": 0.048374364401141616,
+        "category": "trace_elements"
+      },
+      {
+        "feature": "Cu_ppm",
+        "importance": 0.04336420177832805,
+        "category": "trace_elements"
+      },
+      {
+        "feature": "Sr_ppm",
+        "importance": 0.041698772094099376,
+        "category": "trace_elements"
+      },
+      {
         "feature": "spec_Thppm",
-        "importance": 0.020051431634156708,
+        "importance": 0.019483553985867413,
         "category": "geophysical"
       },
       {
+        "feature": "Co_ppm",
+        "importance": 0.01832652419806711,
+        "category": "trace_elements"
+      },
+      {
+        "feature": "ccpi_index",
+        "importance": 0.0166923384040409,
+        "category": "engineered"
+      },
+      {
+        "feature": "MnO_%",
+        "importance": 0.013221184552627422,
+        "category": "geochemistry"
+      },
+      {
+        "feature": "Li_ppm",
+        "importance": 0.012557985911450744,
+        "category": "other"
+      },
+      {
+        "feature": "Hf_ppm",
+        "importance": 0.012309769078303327,
+        "category": "other"
+      },
+      {
         "feature": "U_ppm",
-        "importance": 0.01760504566698082,
+        "importance": 0.012129403327978124,
         "category": "other"
       },
       {
         "feature": "spec_Uppm",
-        "importance": 0.013932089289100356,
+        "importance": 0.011581405721175787,
         "category": "geophysical"
       },
       {
-        "feature": "Li_ppm",
-        "importance": 0.012358864731553839,
-        "category": "other"
-      },
-      {
-        "feature": "qtz_ast",
-        "importance": 0.011266664877129259,
-        "category": "other"
-      },
-      {
         "feature": "spec_doser",
-        "importance": 0.010850526487453991,
+        "importance": 0.01131392731857018,
         "category": "geophysical"
       },
       {
         "feature": "Cd_ppb",
-        "importance": 0.00977483948226214,
+        "importance": 0.009758665854107547,
         "category": "other"
       }
     ],
     "xgboost": [
       {
         "feature": "fault_dist",
-        "importance": 0.14754995703697205,
+        "importance": 0.23264922201633453,
         "category": "structural"
       },
       {
+        "feature": "Sr_ppm",
+        "importance": 0.23022662103176117,
+        "category": "trace_elements"
+      },
+      {
         "feature": "Fe2O3_%",
-        "importance": 0.11186390370130539,
+        "importance": 0.1980707049369812,
         "category": "geochemistry"
       },
       {
         "feature": "V_ppm",
-        "importance": 0.08909113705158234,
+        "importance": 0.09238875657320023,
         "category": "trace_elements"
       },
       {
-        "feature": "mafic_index",
-        "importance": 0.07842539250850677,
-        "category": "engineered"
-      },
-      {
-        "feature": "Ni_ppm",
-        "importance": 0.06824464350938797,
-        "category": "trace_elements"
-      },
-      {
-        "feature": "Sc_ppm",
-        "importance": 0.04830198362469673,
-        "category": "trace_elements"
-      },
-      {
-        "feature": "Sr_ppm",
-        "importance": 0.03757938742637634,
-        "category": "trace_elements"
-      },
-      {
-        "feature": "Hf_ppm",
-        "importance": 0.03534678369760513,
-        "category": "other"
-      },
-      {
-        "feature": "Ag_ppb",
-        "importance": 0.032153431326150894,
-        "category": "other"
-      },
-      {
-        "feature": "Cu_ppm",
-        "importance": 0.029722517356276512,
-        "category": "trace_elements"
-      },
-      {
-        "feature": "Yb_ppm",
-        "importance": 0.026540467515587807,
-        "category": "rare_earth"
-      },
-      {
-        "feature": "Er_ppm",
-        "importance": 0.023800985887646675,
-        "category": "rare_earth"
-      },
-      {
-        "feature": "Co_ppm",
-        "importance": 0.021621834486722946,
-        "category": "trace_elements"
-      },
-      {
-        "feature": "Dy_ppm",
-        "importance": 0.02079184725880623,
-        "category": "rare_earth"
+        "feature": "MnO_%",
+        "importance": 0.07592173665761948,
+        "category": "geochemistry"
       },
       {
         "feature": "mag_depth",
-        "importance": 0.02010764367878437,
+        "importance": 0.045685023069381714,
         "category": "geophysical"
       },
       {
-        "feature": "spec_Uppm",
-        "importance": 0.019353868439793587,
-        "category": "geophysical"
-      },
-      {
-        "feature": "mag_tail_t",
-        "importance": 0.018671778962016106,
-        "category": "geophysical"
-      },
-      {
-        "feature": "Zr_ppm",
-        "importance": 0.018513360992074013,
+        "feature": "Sc_ppm",
+        "importance": 0.04505529627203941,
         "category": "trace_elements"
       },
       {
         "feature": "U_ppm",
-        "importance": 0.018420394510030746,
+        "importance": 0.02530432492494583,
         "category": "other"
       },
       {
+        "feature": "mafic_index",
+        "importance": 0.02397300861775875,
+        "category": "engineered"
+      },
+      {
+        "feature": "Cu_ppm",
+        "importance": 0.012228153645992279,
+        "category": "trace_elements"
+      },
+      {
+        "feature": "Ni_ppm",
+        "importance": 0.010509205050766468,
+        "category": "trace_elements"
+      },
+      {
         "feature": "spec_Thppm",
-        "importance": 0.017861293628811836,
+        "importance": 0.004524665419012308,
         "category": "geophysical"
+      },
+      {
+        "feature": "La_ppm",
+        "importance": 0.0034632529132068157,
+        "category": "rare_earth"
+      },
+      {
+        "feature": "SiO2_%",
+        "importance": 0.0,
+        "category": "geochemistry"
+      },
+      {
+        "feature": "Al2O3_%",
+        "importance": 0.0,
+        "category": "geochemistry"
+      },
+      {
+        "feature": "Th_ppm",
+        "importance": 0.0,
+        "category": "trace_elements"
+      },
+      {
+        "feature": "Ga_ppm",
+        "importance": 0.0,
+        "category": "trace_elements"
+      },
+      {
+        "feature": "K2O_%",
+        "importance": 0.0,
+        "category": "geochemistry"
+      },
+      {
+        "feature": "Ba_ppm",
+        "importance": 0.0,
+        "category": "trace_elements"
+      },
+      {
+        "feature": "Na2O_%",
+        "importance": 0.0,
+        "category": "geochemistry"
       }
     ]
   },

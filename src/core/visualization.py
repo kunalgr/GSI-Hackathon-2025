@@ -12,6 +12,7 @@ import matplotlib.patches as mpatches
 from matplotlib.colors import LinearSegmentedColormap
 from scipy.interpolate import griddata
 from shapely.geometry import MultiPoint, Point
+from scipy.interpolate import griddata
 
 from utils.config import FIGURES_DIR, GEOLOGICAL_FEATURES
 
@@ -22,17 +23,28 @@ class GeologicalVisualizer:
     """
     
     def __init__(self):
-        # Set style
-        plt.style.use('seaborn-v0_8-whitegrid')
+        # Reset matplotlib to defaults to avoid style conflicts
+        plt.rcdefaults()
+        # Use a clean style
+        try:
+            plt.style.use('seaborn-v0_8-whitegrid')
+        except:
+            plt.style.use('default')
+        # Set white background
+        plt.rcParams['figure.facecolor'] = 'white'
+        plt.rcParams['axes.facecolor'] = 'white'
+        plt.rcParams['savefig.facecolor'] = 'white'
+        
         self.geological_colors = self._create_geological_colormap()
         
     def _create_geological_colormap(self):
         """
         Create custom colormap for geological data.
         """
-        colors = ['#2b83ba', '#5aae61', '#fdb863', '#e66101', '#b2182b']
-        n_bins = 100
-        cmap = LinearSegmentedColormap.from_list('geological', colors, N=n_bins)
+        # Use colors from blue (low) to red (high) for prospectivity
+        colors = ['#2166ac', '#4393c3', '#92c5de', '#fddbc7', '#f4a582', '#d6604d', '#b2182b']
+        n_bins = 256
+        cmap = LinearSegmentedColormap.from_list('geological_prospectivity', colors, N=n_bins)
         return cmap
     
     def plot_geological_distributions(self, df: pd.DataFrame, target_col: str = 'likely'):
@@ -300,171 +312,148 @@ class GeologicalVisualizer:
                    dpi=300, bbox_inches='tight')
         plt.close()
     
-    # def create_prospectivity_map_preview(self, predictions: np.ndarray, 
-    #                                    coordinates: pd.DataFrame):
-    #     """
-    #     Create a preview of prospectivity map.
-        
-    #     Parameters:
-    #     -----------
-    #     predictions : np.ndarray
-    #         Predicted probabilities
-    #     coordinates : pd.DataFrame
-    #         Coordinate data
-    #     """
-    #     if not all(col in coordinates.columns for col in ['xcoord', 'ycoord']):
-    #         return
-        
-    #     plt.figure(figsize=(10, 8))
-        
-    #     # Create scatter plot with predictions
-    #     scatter = plt.scatter(coordinates['xcoord'], coordinates['ycoord'], 
-    #                         c=predictions, cmap=self.geological_colors, 
-    #                         s=100, alpha=0.8, edgecolors='black', linewidth=0.5)
-        
-    #     plt.colorbar(scatter, label='Prospectivity Score')
-    #     plt.xlabel('X Coordinate')
-    #     plt.ylabel('Y Coordinate')
-    #     plt.title('Gold Prospectivity Map Preview', fontsize=16)
-        
-    #     # Add contour lines
-    #     try:
-    #         from scipy.interpolate import griddata
-            
-    #         # Create grid
-    #         xi = np.linspace(coordinates['xcoord'].min(), coordinates['xcoord'].max(), 100)
-    #         yi = np.linspace(coordinates['ycoord'].min(), coordinates['ycoord'].max(), 100)
-    #         xi, yi = np.meshgrid(xi, yi)
-            
-    #         # Interpolate
-    #         zi = griddata((coordinates['xcoord'], coordinates['ycoord']), 
-    #                      predictions, (xi, yi), method='linear')
-            
-    #         # Add contours
-    #         contours = plt.contour(xi, yi, zi, levels=[0.3, 0.5, 0.7, 0.9], 
-    #                              colors='black', alpha=0.4, linewidths=1)
-    #         plt.clabel(contours, inline=True, fontsize=8)
-    #     except:
-    #         pass
-        
-    #     plt.tight_layout()
-    #     plt.savefig(FIGURES_DIR / 'prospectivity_map_preview.png', dpi=300, bbox_inches='tight')
-    #     plt.close()
-
-
-    def create_prospectivity_map_preview(self, predictions: np.ndarray, coordinates: pd.DataFrame):
+    def create_prospectivity_map_preview(self, predictions: np.ndarray,
+                                        coordinates: pd.DataFrame):
         """
-        Creates, styles, and saves a professional geological prospectivity map.
+        Creates, styles, and saves a professional geological prospectivity map
+        using a filled contour plot for smooth surfaces and subtle sample point overlay.
+        """
+        # --- Validate inputs ---
+        if not all(col in coordinates.columns for col in ['xcoord', 'ycoord']):
+            print("Warning: Coordinate data must include 'xcoord' and 'ycoord' columns")
+            return
 
-        This function generates a filled contour plot (heatmap) to visualize
-        prospectivity as a continuous surface. It overlays original sample
-        locations and clear contour lines to provide context and highlight key zones.
+        print("\n[CREATING PROSPECTIVITY MAP]")
+        print(f"Points: {len(predictions)}, Range: [{predictions.min():.3f}, {predictions.max():.3f}]")
 
+        # Clip to [0,1]
+        predictions = np.clip(predictions, 0, 1)
+
+        # --- Prepare grid for interpolation ---
+        x = coordinates['xcoord'].values
+        y = coordinates['ycoord'].values
+        mask = ~np.isnan(predictions)
+        xi = np.linspace(x[mask].min(), x[mask].max(), 200)
+        yi = np.linspace(y[mask].min(), y[mask].max(), 200)
+        XI, YI = np.meshgrid(xi, yi)
+
+        # Interpolate onto grid
+        ZI = griddata(
+            points=(x[mask], y[mask]),
+            values=predictions[mask],
+            xi=(XI, YI),
+            method='cubic'   # 'linear' or 'cubic'
+        )
+
+        # --- Plot ---
+        fig, ax = plt.subplots(figsize=(12, 10), facecolor='white')
+        ax.set_facecolor('white')
+
+        # Filled contours
+        contourf = ax.contourf(
+            XI, YI, ZI,
+            levels=15,                    # more levels = smoother gradient
+            cmap='viridis',               # perceptually uniform
+            vmin=0, vmax=1,
+            alpha=0.9
+        )
+
+        # Contour lines
+        contours = ax.contour(
+            XI, YI, ZI,
+            levels=[0.3, 0.5, 0.7, 0.9],
+            colors='k',
+            linewidths=1,
+            alpha=0.5
+        )
+        ax.clabel(contours, inline=True, fontsize=8, fmt='%.1f')
+
+        # Overlay sample points lightly
+        ax.scatter(
+            x, y,
+            c='white', edgecolor='black',
+            s=20, alpha=0.6,
+            linewidth=0.5,
+            label='Sample locations'
+        )
+
+        # Colorbar
+        cbar = plt.colorbar(contourf, ax=ax, pad=0.02)
+        cbar.set_label('Prospectivity Score', fontsize=12)
+
+        # Labels/title
+        ax.set_xlabel('X Coordinate', fontsize=12)
+        ax.set_ylabel('Y Coordinate', fontsize=12)
+        ax.set_title('Gold Prospectivity Map Preview', fontsize=16, pad=20)
+
+        # Grid and aspect
+        ax.grid(True, color='gray', alpha=0.2, linestyle='--')
+        ax.set_aspect('equal', adjustable='box')
+
+        # Stats textbox
+        stats = {
+            'High (>0.7)':  (predictions > 0.7).sum(),
+            'Moderate (0.5–0.7)': ((predictions >= 0.5) & (predictions <= 0.7)).sum(),
+            'Low (<0.5)':   (predictions < 0.5).sum(),
+        }
+        stats_str = "\n".join(f"{k}: {v}" for k, v in stats.items())
+        ax.text(
+            0.98, 0.02, stats_str,
+            transform=ax.transAxes,
+            ha='right', va='bottom',
+            bbox=dict(boxstyle='round,pad=0.5', facecolor='white', alpha=0.7)
+        )
+
+        # Save outputs
+        plt.tight_layout()
+        png_path = FIGURES_DIR / 'prospectivity_map_preview.png'
+        pdf_path = FIGURES_DIR / 'prospectivity_map_preview.pdf'
+        for path in (png_path, pdf_path):
+            plt.savefig(path, dpi=300, bbox_inches='tight', facecolor='white')
+        plt.close(fig)
+
+        print(f"Prospectivity map saved as:\n • {png_path}\n • {pdf_path}")
+    
+    def _idw_interpolation(self, x, y, z, xi, yi, power=2):
+        """
+        Inverse Distance Weighting (IDW) interpolation.
+        
         Parameters:
         -----------
-        predictions : np.ndarray
-            Predicted probabilities (prospectivity scores), expected to be between 0 and 1.
-        coordinates : pd.DataFrame
-            DataFrame with 'xcoord' and 'ycoord' columns.
-
+        x, y : array-like
+            Coordinates of data points
+        z : array-like
+            Values at data points
+        xi, yi : 2D arrays
+            Grid coordinates for interpolation
+        power : float
+            Power parameter for IDW (default=2)
+            
         Returns:
         --------
-        Optional[Path]
-            The path to the saved image file on success, otherwise None.
+        zi : 2D array
+            Interpolated values on grid
         """
-
-        print(f"predictions: {predictions}")
-        print(f"coordinates: {coordinates}")
-        # --- 1. Input Validation ---
-        if not all(col in coordinates.columns for col in ['xcoord', 'ycoord']):
-            print("Warning: Coordinate data must include 'xcoord' and 'ycoord' columns.")
-            return None
-        if predictions.size != len(coordinates):
-            print("Warning: Mismatch between number of predictions and coordinates.")
-            return None
-        if predictions.size == 0:
-            print("Warning: Prediction or coordinate data is empty.")
-            return None
-
-        # --- 2. Interpolation for Continuous Surface ---
-        grid_resolution: complex = 900j
-        interpolation_method: str = 'cubic'
-        fallback_interpolation_method: str = 'linear'
+        zi = np.zeros_like(xi)
         
-        grid_x, grid_y = np.mgrid[
-            coordinates['xcoord'].min():coordinates['xcoord'].max():grid_resolution, 
-            coordinates['ycoord'].min():coordinates['ycoord'].max():grid_resolution
-        ]
+        for i in range(xi.shape[0]):
+            for j in range(xi.shape[1]):
+                # Calculate distances from grid point to all data points
+                distances = np.sqrt((xi[i, j] - x)**2 + (yi[i, j] - y)**2)
+                
+                # Avoid division by zero
+                distances[distances == 0] = 1e-10
+                
+                # Calculate weights (inverse distance)
+                weights = 1 / distances**power
+                
+                # Normalize weights
+                weights /= weights.sum()
+                
+                # Calculate interpolated value
+                zi[i, j] = np.sum(weights * z)
         
-        try:
-            grid_z = griddata(coordinates[['xcoord', 'ycoord']], predictions, (grid_x, grid_y), method=interpolation_method)
-        except Exception as e:
-            print(f"Warning: '{interpolation_method}' interpolation failed ({e}). Falling back to '{fallback_interpolation_method}'.")
-            try:
-                grid_z = griddata(coordinates[['xcoord', 'ycoord']], predictions, (grid_x, grid_y), method=fallback_interpolation_method)
-            except Exception as e_fallback:
-                print(f"Error: Fallback interpolation also failed ({e_fallback}). Cannot generate map.")
-                return None
-        
-        grid_z = np.clip(grid_z, 0, 1) 
-        grid_z = np.nan_to_num(grid_z, nan=0.0)
-        # print(list(grid_z))
-        print(f"grid_z min: {np.nanmin(grid_z)}, max: {np.nanmax(grid_z)}")
-
-        print("Type:", type(grid_z))
-
-        # --- 3. Plotting ---
-        plt.style.use('seaborn-v0_8-whitegrid')
-        fig, ax = plt.subplots(figsize=(12, 10))
-
-        # prepare contour levels from only the valid (non-nan) cells
-        valid_z = grid_z[~np.isnan(grid_z)]
-        vmin, vmax = valid_z.min(), valid_z.max()
-        levels = np.linspace(vmin, vmax, 21)
-
-        try:
-            # Plot the main heatmap
-            colormap: str = 'YlOrRd'
-
-            # norm = plt.Normalize(vmin=vmin, vmax=vmax)
-
-            contourf_plot = ax.contourf(grid_x, grid_y, grid_z, levels=levels, cmap=colormap, extend='max')
-
-            # Add and configure the color bar
-            cbar = fig.colorbar(contourf_plot, ax=ax, orientation='vertical', pad=0.02)
-            cbar.set_label('Gold Prospectivity Score', fontsize=12, weight='bold')
-
-            # Overlay contour lines for key thresholds
-            contour_levels: List[float] = [0.5, 0.75, 0.9]
-            contour_plot = ax.contour(grid_x, grid_y, grid_z, levels=contour_levels, 
-                                    colors='black', linewidths=0.75, linestyles='--')
-            ax.clabel(contour_plot, inline=True, fontsize=9, fmt='%1.2f')
-
-            # Plot original sample locations for context
-            ax.scatter(coordinates['xcoord'], coordinates['ycoord'], c='black', s=5, 
-                    alpha=0.5, label='Sample Locations')
-
-            # Final styling
-            ax.set_title('Gold Prospectivity Map', fontsize=18, weight='bold', pad=15)
-            ax.set_xlabel('Easting (X Coordinate)', fontsize=12)
-            ax.set_ylabel('Northing (Y Coordinate)', fontsize=12)
-            ax.set_aspect('equal', adjustable='box')
-            ax.legend(loc='upper left')
-
-            # --- 4. Save and Return Path ---
-            output_path = FIGURES_DIR / 'gold_prospectivity_map.png'
-            plt.savefig(output_path, dpi=300, bbox_inches='tight')
-            
-            print(f"Prospectivity map successfully saved to: {output_path}")
-            return output_path
-            
-        except Exception as e:
-            print(f"An unexpected error occurred during plotting: {e}")
-            return None
-        finally:
-            plt.close(fig) # Ensure figure is always closed to free memory
-
-
+        return zi
     
     def create_exploration_priority_plot(self, df: pd.DataFrame, predictions: np.ndarray):
         """
@@ -482,7 +471,7 @@ class GeologicalVisualizer:
                                    bins=[0, 0.3, 0.5, 0.7, 0.9, 1.0],
                                    labels=['Very Low', 'Low', 'Moderate', 'High', 'Very High'])
         
-        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 6))
+        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 6), facecolor='white')
         
         # 1. Priority distribution
         priority_counts = priority_categories.value_counts()
@@ -495,7 +484,7 @@ class GeologicalVisualizer:
         if 'Au_ppb' in df.columns:
             priority_df = pd.DataFrame({
                 'Priority': priority_categories,
-                'Au_ppb': df['Au_ppb'],
+                'Au_ppb': df['Au_ppb'].values,
                 'Prospectivity_Score': predictions
             })
             
@@ -504,8 +493,11 @@ class GeologicalVisualizer:
             ax2.set_yscale('log')
             ax2.set_ylabel('Au (ppb) - Log Scale')
             ax2.set_title('Gold Concentration by Exploration Priority')
+            ax2.set_facecolor('white')
         
         plt.suptitle('Exploration Priority Analysis', fontsize=16)
         plt.tight_layout()
-        plt.savefig(FIGURES_DIR / 'exploration_priority.png', dpi=300, bbox_inches='tight')
+        plt.savefig(FIGURES_DIR / 'exploration_priority.png', 
+                   dpi=300, bbox_inches='tight',
+                   facecolor='white', edgecolor='none')
         plt.close()
