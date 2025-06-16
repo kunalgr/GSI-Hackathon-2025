@@ -80,7 +80,7 @@ The system expects geological data with the following feature categories:
 
 ### Spatial Features
 - Coordinates: xcoord, ycoord
-- Structural: fault_dist, lineament
+- Structural: fault_dist (Distance of training data point from the nearest major structure like fault), lineament
 - Geological: age, lithology, formation
 
 ### Target Variable
