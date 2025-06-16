@@ -59,6 +59,7 @@ The system expects geological data with the following feature categories:
 
 ### Geochemical Features
 - Major oxides: SiO2, Al2O3, Fe2O3, TiO2, CaO, MgO, MnO, Na2O, K2O, P2O5, LOI
+- Elements: 'Ba_ppm', 'Ga_ppm', 'Sc_ppm', 'V_ppm', 'Th_ppm', 'Pb_ppm', 'Ni_ppm', 'Co_ppm', 'Rb_ppm', 'Sr_ppm', 'Y_ppm', 'Zr_ppm', 'Nb_ppm', 'Cr_ppm', 'Cu_ppm', 'Zn_ppm', 'Li_ppm', 'Cs_ppm', 'As_ppm', 'Sb_ppm', 'Se_ppm', 'Ag_ppb', 'Cd_ppb', 'Hg_ppb', 'Be_ppm', 'Ge_ppm', 'Mo_ppm', 'Sn_ppm', 'La_ppm', 'Eu_ppm', 'Tb_ppm', 'Gd_ppm', 'Dy_ppm', 'Ho_ppm', 'Er_ppm', 'Yb_ppm', 'Lu_ppm', 'Hf_ppm', 'Ta_ppm', 'U_ppm', 'Pt_ppb', 'Pd_ppb',
 - All values in weight percentage (%)
 
 ### Trace Elements
