@@ -8,7 +8,7 @@
 
 ## 📋 Overview
 
-This project implements a state-of-the-art machine learning pipeline for **gold prospectivity mapping** using geological, geochemical, and geophysical data. The system employs multiple advanced classification algorithms and ensemble methods to predict areas with high potential for gold mineralization.
+This project implements a innovative machine learning approach for **gold prospectivity mapping** using Remote Sensing, Geophysical, Geological, Structural and Geochemical database shared by GSI. The system employs multiple advanced classification algorithms and ensemble methods to predict areas with high potential for gold mineralization.
 
 ### 🎯 Key Features
 
