@@ -82,6 +82,7 @@ The system expects geological data with the following feature categories:
 - Coordinates: xcoord, ycoord
 - Structural: fault_dist (Distance of training data point from the nearest major structure like fault), lineament
 - Geological: age, lithology, formation
+- Geochemical: Mafic Index, Alkanity Index, Alteration Index, Silicification Index
 
 ### Target Variable
 - **likely**: Binary (0 = non-prospective, 1 = prospective)
