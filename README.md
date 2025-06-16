@@ -212,13 +212,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 👥 Authors
 
 - **Kunal Ghosh Roy** - *Data Science Expert: Independent Consultant* - [https://github.com/kunalgr/](https://github.com/kunalgr/)
-- **Atree Bandyopadhyay** - *Subject Matter Expert: SRK India*
-
-## 🙏 Acknowledgments
-
-- SRK India for providing domain expertise
-- Open-source ML community for amazing tools
-- Research papers on mineral prospectivity mapping
+- **Atree Bandyopadhyay** - *Subject Matter Expert and Data Science: SRK Consulting India (Team Lead)*
 
 ## 📚 References
 
