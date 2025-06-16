@@ -197,7 +197,6 @@ df_enhanced = engineer.engineer_features(df)
 df_enhanced['custom_index'] = (df['Au_ppb'] * df['As_ppm']) / df['Cu_ppm']
 ```
 
-
 ## 🤝 Contributing
 
 We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details.
