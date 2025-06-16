@@ -8,11 +8,13 @@
 
 ## 📋 Overview
 
-This project implements a innovative machine learning approach for **gold prospectivity mapping** using Remote Sensing, Geophysical, Geological, Structural and Geochemical database shared by GSI. The system employs multiple advanced classification algorithms and ensemble methods to predict areas with high potential for gold mineralization.
+This project implements a combined innovative machine learning and mineral system modelling approach for **gold prospectivity mapping** using Remote Sensing, Geophysical, Geological, Structural and Geochemical database shared by GSI. The system employs multiple advanced classification algorithms and ensemble methods to predict areas with high potential for gold mineralization.
 
 ### 🎯 Key Features
 
-- **Comprehensive Data Preprocessing**: Handles geological data with missing values and outliers
+- **Understanding Geology and Developing Mineral System**: Develop the mineral system model
+- **Reading the Geological data and Preprocessing**: Preparing the training dataset and prediction points
+- **Comprehensive Data Preprocessing and analysis**: Data Cleaning, processing and analysis
 - **Domain-Specific Feature Engineering**: Creates 20+ geological indices and ratios
 - **Advanced Feature Selection**: Ensemble approach combining 6 different methods
 - **Multiple ML Algorithms**: 10 different classification algorithms including XGBoost, LightGBM, and CatBoost
